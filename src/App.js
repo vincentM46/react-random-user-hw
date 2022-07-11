@@ -1,23 +1,31 @@
-import logo from './logo.svg';
 import './App.css';
+import { useState, useEffect } from 'react';
+import { fetchUser } from "./services/Random_User";
+import UserSummary from "./components/UserSummary";
 
 function App() {
+
+  const [currentUser, setCurrentUser] = useState({});
+
+  async function changeUser(u) {
+    try {
+      const data = await fetchUser();
+      setCurrentUser(data);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(() => {
+    changeUser();
+  }, []);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="main">
+        <button onClick={(u) => changeUser(u)}>New User</button>
+        <div>
+          <UserSummary userData={currentUser} />
+        </div>
+      </div>
     </div>
   );
 }
